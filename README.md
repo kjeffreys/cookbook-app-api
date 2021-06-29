@@ -33,4 +33,63 @@ Notes: (mostly commands run to remember that are useful/frequent)
     ... 3) Use pip to install docker-compose                             ...
     ... 4) Run test build & flake8 linting,failures will fail build/email...
 
+    !!! UPDATE: Travis-CI Docker Pull Issue !!!
+
+    -Docker have applied a rate limit on pulling images.
+
+    -The limit is 100 pulls within 6 hours for unauthenticated users, 
+    and 200 for authenticated users.
+
+    -Because Travis-CI uses a shared IP (for all TravisCI users), 
+    the 100 pulls is consumed quickly.
+
+    -The solution is to authenticate with Docker in the Travis-CI job, 
+    so you can take advantage of the 200 pulls every 6 hours.
+
+    You can do it by following the below steps.
+    1. Register on Docker Hub
+    If you don't already have one, head over to hub.docker.com 
+    and register for a new free account.
+
+    2. Add credentials to Travis-CI project
+    Login to travis-ci.com and select the cooking-app-api project.
+
+    Choose More options > Settings:
+    On the page, locate the Environment Variables section.
+    Add the following variables:
+DOCKER_USERNAME - The username for your Docker Hub account.
+
+DOCKER_PASSWORD - The password for your Docker Hub account.
+Be sure to escape and special characters in your password by 
+adding \ before them.
+
+Also, ensure you leave DISPLAY VALUE IN BUILD LOG unchecked for both values, 
+because you don't want to expose your credentials in the job output.
+
+    3. Update Travis-CI Config
+    In your project, open the .travis-ci.yml file, 
+    and add the following block:
+before_install:
+  - echo $DOCKER_PASSWORD | docker login --username $DOCKER_USERNAME 
+  --password-stdin
+
+This does the following:
+echo $DOCKER_PASSWORD prints the password to the screen, 
+and the | (pipe) will send that output to the proceeding command.
+
+docker login --username $DOCKER_USERNAME will call the docker login command 
+with the username we set in the environment variables.
+
+--password-stdin is used to accept the password in a way that prevents it 
+being printed to the screen (it’s required with the | syntax).
+
+Once done, full .travis-ci.yml file should look like .travis.yml file as seen
+in first .travis.yml commit to this project.
+
+
+!!! UPDATE: Travis-CI Docker Pull Issue #2!!!
+TravisCI may not authorize for private repos with a free account. Making repo
+public and making new commit to test if pull triggers successfully.
+
+
     
