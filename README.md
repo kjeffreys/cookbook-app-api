@@ -91,5 +91,33 @@ in first .travis.yml commit to this project.
 TravisCI may not authorize for private repos with a free account. Making repo
 public and making new commit to test if pull triggers successfully.
 
+# 5 Getting started with Django TDD
+
+Prior to running 
+`docker-compose run app sh -c "python manage.py test && flake8"`,
+which will run all django tests (methods starting with test in files starting
+with test) and flake8 linter... need to install the flake8 on the docker image.
+
+Install flake8 after adding to reqs by running "docker-compose build"
+
+Example output of above cmd:
+user@host /d/cookbook-app-api (main)
+$ docker-compose run app sh -c "python manage.py test && flake8" 
+Creating cookbook-app-api_app_run ... done
+Creating test database for alias 'default'...
+System check identified no issues (0 silenced).
+..
+----------------------------------------------------------------------
+Ran 2 tests in 0.001s
+
+OK
+Destroying test database for alias 'default'...
+./app/calc.py:5:1: E302 expected 2 blank lines, found 1
+./app/calc.py:7:1: W391 blank line at end of file
+./app/test_calc.py:4:1: E302 expected 2 blank lines, found 1
+./app/test_calc.py:8:31: E231 missing whitespace after ','
+./app/test_calc.py:12:1: W391 blank line at end of file
+./app/test_calc.py:12:36: E231 missing whitespace after ','
+ERROR: 1
 
     
