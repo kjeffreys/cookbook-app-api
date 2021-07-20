@@ -1,7 +1,7 @@
 # cookbook-app-api
 [![Build Status](https://www.travis-ci.com/kjeffreys/cookbook-app-api.svg?branch=main)](https://www.travis-ci.com/kjeffreys/cookbook-app-api)
-Notes: 
-(mostly commands run to remember that are useful/frequent)
+ 
+_ _(mostly commands run to remember that are useful/frequent)_ _
 
 ## 1) Build from Dockerfile:
 ```
