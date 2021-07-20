@@ -3,23 +3,28 @@
 Notes: 
 (mostly commands run to remember that are useful/frequent)
 
-# 1) Build from Dockerfile:
+## 1) Build from Dockerfile:
 ```
     docker build .
 ```
 
-# 2) Build from docker-compose.yml:
+## 2) Build from docker-compose.yml:
 ```
    docker-compose build
 ```
 
-# 3) Run commands using docker-compose:
-    "docker-compose run {name of the service to run the command on} {command}"
+## 3) Run commands using docker-compose:
+```
+docker-compose run {name of the service to run the command on} {command}
+```
 
-    ex1)```docker-compose run app sh -c "django-admin startproject app ."```
+### Example
+```
+docker-compose run app sh -c "django-admin startproject app ."
+```
+    
     (Service here refers to an entry under "services" in docker-compose.yml)
     
-
     ... run a linux container created from the docker files, and then run...
     ... the command following, in this case from bash shell (sh -c), run ...
     ... the django admin management command "startproject" that comes    ...
@@ -32,7 +37,7 @@ Notes:
     ... though we have used "cd into /app based on the Dockerfile, and   ...
     ... then we create a project (template code from django)             ...
 
-# 4) TravisCI: setup AND troubleshooting for github integration with TDD
+## 4) TravisCI: setup AND troubleshooting for github integration with TDD
     ... Tracing through the .travis.yml file                             ...
     ... Every time the is a push to github, the .travis.yml tells travis ...
     ... 1) Spin up a Python 3.6 server                                   ...
@@ -108,7 +113,7 @@ Notes:
     TravisCI.org to TravisCI.com causing issues. Will test private again
     in future.
 
-# 5) Getting started with Django TDD
+## 5) Getting started with Django TDD
 
     Prior to running
     ```docker-compose run app sh -c "python manage.py test && flake8"```
@@ -139,4 +144,4 @@ Destroying test database for alias 'default'...
 ./app/test_calc.py:12:36: E231 missing whitespace after ','
 ERROR: 1
 
-    
+## 6)   
