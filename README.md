@@ -1,15 +1,22 @@
 # cookbook-app-api
 
-Notes: (mostly commands run to remember that are useful/frequent)
+Notes: 
+(mostly commands run to remember that are useful/frequent)
 
-# 1) Build from Dockerfile - "docker build ."
+# 1) Build from Dockerfile:
+```
+    docker build .
+```
 
-# 2) Build from docker-compose.yml - "docker-compose build"
+# 2) Build from docker-compose.yml:
+```
+   docker-compose build
+```
 
 # 3) Run commands using docker-compose:
     "docker-compose run {name of the service to run the command on} {command}"
 
-#   ex1)```docker-compose run app sh -c "django-admin startproject app ."```
+    ex1)```docker-compose run app sh -c "django-admin startproject app ."```
     (Service here refers to an entry under "services" in docker-compose.yml)
     
 
@@ -56,49 +63,61 @@ Notes: (mostly commands run to remember that are useful/frequent)
 
     Choose More options > Settings:
     On the page, locate the Environment Variables section.
+    
     Add the following variables:
-DOCKER_USERNAME - The username for your Docker Hub account.
 
-DOCKER_PASSWORD - The password for your Docker Hub account.
-Be sure to escape and special characters in your password by 
-adding \ before them.
+    DOCKER_USERNAME - The username for your Docker Hub account.
+    DOCKER_PASSWORD - The password for your Docker Hub account.
 
-Also, ensure you leave DISPLAY VALUE IN BUILD LOG unchecked for both values, 
-because you don't want to expose your credentials in the job output.
+    !!!Be sure to escape and special characters in your password by 
+    adding "\" before them!!!
+
+    Also, ensure you leave DISPLAY VALUE IN BUILD LOG unchecked for 
+    both values, because you don't want to expose your credentials 
+    in the job output.
 
     3. Update Travis-CI Config
     In your project, open the .travis-ci.yml file, 
     and add the following block:
-before_install:
-  - echo $DOCKER_PASSWORD | docker login --username $DOCKER_USERNAME 
-  --password-stdin
 
-This does the following:
-echo $DOCKER_PASSWORD prints the password to the screen, 
-and the | (pipe) will send that output to the proceeding command.
+    before_install:
+        - echo $DOCKER_PASSWORD | docker login --username $DOCKER_USERNAME 
+        --password-stdin
 
-docker login --username $DOCKER_USERNAME will call the docker login command 
-with the username we set in the environment variables.
+    This does the following:
+    echo $DOCKER_PASSWORD prints the password to the screen, 
+    and the | (pipe) will send that output to the proceeding command.
 
---password-stdin is used to accept the password in a way that prevents it 
-being printed to the screen (it’s required with the | syntax).
+    docker login --username $DOCKER_USERNAME will call the docker 
+    login command with the username we set in the environment variables.
 
-Once done, full .travis-ci.yml file should look like .travis.yml file as seen
-in first .travis.yml commit to this project.
+    --password-stdin is used to accept the password in a way that 
+    prevents it being printed to the screen 
+    (it’s required with the | syntax).
+
+    Once done, full .travis-ci.yml file should look like .travis.yml 
+    file as seen in first .travis.yml commit to this project.
 
 
-!!! UPDATE: Travis-CI Docker Pull Issue #2!!!
-TravisCI may not authorize for private repos with a free account. Making repo
-public and making new commit to test if pull triggers successfully.
+    !!! UPDATE: Travis-CI Docker Pull Issue #2!!!
+    TravisCI may not authorize for private repos with a free account. 
+    Making repo public and making new commit to test if pull triggers 
+    successfully.
 
-# 5 Getting started with Django TDD
+    !!! Last update: Now working. May have just been migration of 
+    TravisCI.org to TravisCI.com causing issues. Will test private again
+    in future.
 
-Prior to running 
-`docker-compose run app sh -c "python manage.py test && flake8"`,
-which will run all django tests (methods starting with test in files starting
-with test) and flake8 linter... need to install the flake8 on the docker image.
+# 5) Getting started with Django TDD
 
-Install flake8 after adding to reqs by running "docker-compose build"
+    Prior to running
+    ```docker-compose run app sh -c "python manage.py test && flake8"```
+    which will run all django tests 
+    (methods starting with test in files starting with test) 
+    and flake8 linter... need to install the flake8 on the docker image.
+
+    Install flake8 after adding to reqs by running 
+    ```docker-compose build```
 
 Example output of above cmd:
 user@host /d/cookbook-app-api (main)
