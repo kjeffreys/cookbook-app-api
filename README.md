@@ -126,11 +126,12 @@ and flake8 linter... need to install the flake8 on the docker image.
 ```
 docker-compose build
 ```
+**Then**
+```
+docker-compose run app sh -c "python manage.py test && flake8"
+```
 
 Example output of above cmd:
-```
-user@host /d/cookbook-app-api (main)
-$ docker-compose run app sh -c "python manage.py test && flake8" 
 Creating cookbook-app-api_app_run ... done
 Creating test database for alias 'default'...
 System check identified no issues (0 silenced).
@@ -152,4 +153,9 @@ ERROR: 1
 ## 6) Configure Dango customer user model
 ```
 docker-compose run app sh -c "python manage.py startapp core"
+```
+For new apps, add the new app (in this case 'core') to:
+**INSTALLED_APPS** within the original settings file at path:
+```
+app/app/settings.py
 ```
