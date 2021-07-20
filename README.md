@@ -130,7 +130,7 @@ docker-compose build
 ```
 docker-compose run app sh -c "python manage.py test && flake8"
 ```
-
+```
 Example output of above cmd:
 Creating cookbook-app-api_app_run ... done
 Creating test database for alias 'default'...
@@ -156,6 +156,37 @@ docker-compose run app sh -c "python manage.py startapp core"
 ```
 For new apps, add the new app (in this case 'core') to:
 **INSTALLED_APPS** within the original settings file at path:
-```
 app/app/settings.py
+
+**NOTE**:
+The current state should create an error b/c in TDD, we want to make sure 
+any tests fail first, which is currently happening in 
+app/core/tests/test_models.py for the unit test:
+test_create_user_with_email_successful(self):
+
+Here is the error:
 ```
+======================================================================
+ERROR: test_create_user_with_email_successful (core.tests.test_models.ModelTests)
+Test creating a new user with a email entry is successful
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/app/core/tests/test_models.py", line 12, in test_create_user_with_email_successful
+    password=password
+TypeError: create_user() missing 1 required positional argument: 'username'
+
+----------------------------------------------------------------------
+Ran 1 test in 0.007s
+
+FAILED (errors=1)
+Destroying test database for alias 'default'...
+ERROR: 1
+```
+
+And this is b/c django's default for get_user_model().objects.create_user()
+is to expect an argument of "username". So when creating the model, this
+will be overridden to an argument of a user's "email" field, and then the test
+will no longer fail.
+
+
+
