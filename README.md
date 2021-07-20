@@ -184,9 +184,46 @@ ERROR: 1
 ```
 
 And this is b/c django's default for get_user_model().objects.create_user()
-is to expect an argument of "username". So when creating the model, this
-will be overridden to an argument of a user's "email" field, and then the test
-will no longer fail.
+is to expect an argument of "username". So when creating the model, it will
+_ _extend_ _ the base django create_user() method and create the new version
+with an argument of a user's "email" field instead of "username", 
+and then the test will no longer fail.
 
+Updating models to extend Django base methods for creating a user to be tested.
 
+```
+is_active=True
+```
+means a new user being created will be considered active unless
+other specified
 
+```
+is_staff=False
+```
+means a new user being created will **NOT** be considered an employee access.
+
+**FINALLY** notice that in app/app/settings.py , the added variable:
+```
+AUTH_USER_MODEL = 'core.User'
+```
+And that is the final step in creating a _ _custom_ _ user model extended from
+the Django built-in User() and UserManager() models.
+
+**Whenever models are changed, need to make migrations by running:**
+```
+docker-compose run app sh -c "python manage.py makemigrations {app}"
+```
+In this case:
+```
+docker-compose run app sh -c "python manage.py makemigrations core"
+```
+
+**Output**:
+```
+Migrations for 'core':
+  core/migrations/0001_initial.py
+    - Create model User
+```
+The produced file core/migrations/0001_initial.py is the instructions for 
+Django to create the model in the real db that will be used later, and thereby
+setup the database automatically from the new models
