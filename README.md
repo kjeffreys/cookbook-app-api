@@ -209,7 +209,7 @@ AUTH_USER_MODEL = 'core.User'
 And that is the final step in creating a _custom_ user model extended from
 the Django built-in User() and UserManager() models.
 
-**Whenever models are changed, need to make migrations by running:**
+### Whenever models are changed, need to make migrations by running:
 ```
 docker-compose run app sh -c "python manage.py makemigrations {app}"
 ```
@@ -226,7 +226,7 @@ Migrations for 'core':
 ```
 Which produced file core/migrations/0001_initial.py is the instructions for 
 Django to create the model in the real db that will be used later, and
-setup the database automatically from the new models
+setup the database automatically from the new models\
 
 ### Normalize emails
 Django has a helper method to normalize emails to all lowercase, preventing
@@ -238,4 +238,45 @@ user = self.model(email=self.normalize_email(email), **extra_fields)
 And checked against a test in test_models.py
 ```
 self.assertEqual(user.email, email.lower())
+```
+
+### Add validation for email field
+Step 1) TDD failure
+```
+    def test_new_user_invalid_email(self):
+    """Test that creating user with no email raises error"""
+        with self.assertRaises(ValueError):
+        user = get_user_model().objects.create_user(None, 'test123')
+```
+**Output**
+```
+======================================================================
+FAIL: test_new_user_invalid_email (core.tests.test_models.ModelTests)
+Test that creating user with no email raises error
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/app/core/tests/test_models.py", line 29, in test_new_user_invalid_email
+    user = get_user_model().objects.create_user(None, 'test123')
+AssertionError: ValueError not raised
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.222s
+
+FAILED (failures=1)
+Destroying test database for alias 'default'...
+ERROR: 1
+```
+\
+Step 2: Implement the feature in models.py to make None, '', and other
+non-entries to email field _will_ raise **ValueError**
+```
+    def create_user(self, email, password=None, **extra_fields):
+        """Creates and saves a new user"""
+        if not email:
+            raise ValueError('Users must have an email address')
+        user = self.model(email=self.normalize_email(email), **extra_fields)
+        user.set_password(password)
+        user.save(using=self._db)
+
+        return user
 ```
