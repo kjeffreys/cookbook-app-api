@@ -229,9 +229,10 @@ Django to create the model in the real db that will be used later, and
 setup the database automatically from the new models\
 
 ### Normalize emails
-Django has a helper method to normalize emails to all lowercase, preventing
-random capitalization changes from not recognizing users as the same.
-This is added to in models, in the UserManager class's create_user() method now.
+Django has a helper method to normalize domain section of emails to all 
+lowercase, preventing random capitalization changes from not recognizing 
+users as the same. This is added to in models, in the UserManager class's 
+create_user() method now.
 ```
 user = self.model(email=self.normalize_email(email), **extra_fields)
 ```
@@ -241,7 +242,7 @@ self.assertEqual(user.email, email.lower())
 ```
 
 ### Add validation for email field
-Step 1) TDD failure
+**Step 1)** TDD failure
 ```
     def test_new_user_invalid_email(self):
     """Test that creating user with no email raises error"""
@@ -266,9 +267,8 @@ FAILED (failures=1)
 Destroying test database for alias 'default'...
 ERROR: 1
 ```
-\
-Step 2: Implement the feature in models.py to make None, '', and other
-non-entries to email field _will_ raise **ValueError**
+**Step 2:** Implement the feature in models.py so that 
+{None, '', ..., other non-entries} to email field _will_ raise **ValueError**
 ```
     def create_user(self, email, password=None, **extra_fields):
         """Creates and saves a new user"""
