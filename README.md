@@ -1,7 +1,7 @@
 # cookbook-app-api
 [![Build Status](https://www.travis-ci.com/kjeffreys/cookbook-app-api.svg?branch=main)](https://www.travis-ci.com/kjeffreys/cookbook-app-api)
  
-_ _(mostly commands run to remember that are useful/frequent)_ _
+_(included and explained commands run that were useful/frequent)_
 
 ## 1) Build from Dockerfile:
 ```
@@ -185,7 +185,7 @@ ERROR: 1
 
 And this is b/c django's default for get_user_model().objects.create_user()
 is to expect an argument of "username". So when creating the model, it will
-_ _extend_ _ the base django create_user() method and create the new version
+_extend_ the base django create_user() method and create the new version
 with an argument of a user's "email" field instead of "username", 
 and then the test will no longer fail.
 
@@ -206,7 +206,7 @@ means a new user being created will **NOT** be considered an employee access.
 ```
 AUTH_USER_MODEL = 'core.User'
 ```
-And that is the final step in creating a _ _custom_ _ user model extended from
+And that is the final step in creating a _custom_ user model extended from
 the Django built-in User() and UserManager() models.
 
 **Whenever models are changed, need to make migrations by running:**
@@ -224,6 +224,18 @@ Migrations for 'core':
   core/migrations/0001_initial.py
     - Create model User
 ```
-The produced file core/migrations/0001_initial.py is the instructions for 
-Django to create the model in the real db that will be used later, and thereby
+Which produced file core/migrations/0001_initial.py is the instructions for 
+Django to create the model in the real db that will be used later, and
 setup the database automatically from the new models
+
+### Normalize emails
+Django has a helper method to normalize emails to all lowercase, preventing
+random capitalization changes from not recognizing users as the same.
+This is added to in models, in the UserManager class's create_user() method now.
+```
+user = self.model(email=self.normalize_email(email), **extra_fields)
+```
+And checked against a test in test_models.py
+```
+self.assertEqual(user.email, email.lower())
+```
