@@ -150,7 +150,7 @@ Destroying test database for alias 'default'...
 ERROR: 1
 ```
 
-## 6) Configure Dango customer user model
+## 6) Configure Django customer user model
 ```
 docker-compose run app sh -c "python manage.py startapp core"
 ```
@@ -218,7 +218,7 @@ In this case:
 docker-compose run app sh -c "python manage.py makemigrations core"
 ```
 
-**Output**:
+**Output :**
 ```
 Migrations for 'core':
   core/migrations/0001_initial.py
@@ -249,7 +249,7 @@ self.assertEqual(user.email, email.lower())
         with self.assertRaises(ValueError):
         user = get_user_model().objects.create_user(None, 'test123')
 ```
-**Output**
+**Output :**
 ```
 ======================================================================
 FAIL: test_new_user_invalid_email (core.tests.test_models.ModelTests)
