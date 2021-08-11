@@ -159,12 +159,18 @@ For new apps, add the new app (in this case 'core') to:
 app/app/settings.py
 
 **NOTE**:
-The current state should create an error b/c in TDD, we want to make sure 
-any tests fail first, which is currently happening in 
-app/core/tests/test_models.py for the unit test:
-test_create_user_with_email_successful(self):
+The original state should create an error b/c in TDD, we want to make sure 
+any tests fail first, which initially did in 
+app/core/tests/test_models.py for the unit test
+**test_create_user_with_email_successful(self):**
 
-Here is the error:
+Leaving this error example for TDD understanding. However, in future commits
+understand that TDD is used to make tests fail at first, but the new files added
+for commit are updated to not fail _prior_ to add/commit, thus protecting the
+repo's integrity. i.e. just b/c we don't keep adding tests that fail, doesn't
+mean it wasn't done first and then the tests/code were altered to make the test
+pass. This is important to understand b/c without failing first there is no 
+assurance the test is actually working for the intended functionality tests.
 ```
 ======================================================================
 ERROR: test_create_user_with_email_successful (core.tests.test_models.ModelTests)
@@ -280,3 +286,43 @@ ERROR: 1
 
         return user
 ```
+
+## 7) Setup Django admin
+   Update Django admin to allow management of custom user model. Consequently,
+   this provides an interface to login and be able to:
+        1) C reate new users manually
+        2) R ead which users have been created by the Django
+        3) U pdate and make changes to existing users
+        4) D?
+
+### Add tests for listing users in Django admin
+    1) Add core/tests/test_admin.py
+        a) Add all admin page Unit Tests
+        b) Extend TestCase class to AdminSiteTests class
+        c) Create setup() function: (Precedes all Unit Tests)
+            i) Runs before all the other tests are run
+            ii) Completes setup tasks that need to be done before other
+              tests in the TestCase class will function correctly.
+
+            Setup Task 1) create test Client
+            Setup Task 2) setup new user (admin) to be used in tests
+            Setup Task 3) Make sure user is logged into the Client
+            Setup Task 4) create another user (regular/not admin) 
+                            that is not authenticated to test (e.g. list users)
+        d) Unit Test 1: Test that users are listed in Django Admin
+            NOTE 1: same as normal users, admin.py expects username by default. 
+            So again it will be tested for and modified to accept 'email' for a
+            custom admin_user creation in lieu of expecting 'username'.
+            Note 2: reverse() helper method from Django used. well documented
+            on Django but want to note the syntax:
+            ... reverse('{appBeingUsed}:{urlBeingUsed}') ...
+
+            Steps:
+            i) reverse('admin:core_user_changelist')
+            will generate the URL for listing the user page.  
+            ii) res = self.client.get(url)
+            Use the test client object obtained from setup() to perform an
+            HTTP get() on the url obtained from (i)
+            iii) self.assertContains(res, self.user.name),(res, self.user.email)
+            Django helper to check that the response from (ii) has fields.
+
